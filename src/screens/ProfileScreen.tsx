@@ -1,14 +1,10 @@
-import EditProfile from "../components/Form/EditProfile";
-import CustomPost from "../components/Post/CustomPost";
 import useAuth from "../hooks/useAuth";
 import useSingleUser from "../hooks/useSingleUser";
-import Button from "../shared/Button";
 import { useState } from "react";
-import { IPost } from "../types/PostInterfaces";
 import { Outlet } from "react-router-dom";
+import PostsList from "../components/Post/PostsList";
 
 const ProfileScreen = () => {
-  const [editProfile, setEditProfile] = useState(false);
   const currentUser = useAuth();
 
   const id: number = currentUser?.id;
@@ -16,33 +12,29 @@ const ProfileScreen = () => {
   const { data: user, error } = useSingleUser(id.toString());
 
   return (
-    user ? (<section className="w-full min-h-[80vh]  items-center flex-wrap flex-col justify-center">
-      <div className="lg:max-w-4xl max-w-full mx-auto flex items-center justify-center flex-col">
-        <div className="flex my-3 py-2   w-full flex-row flex-wrap items-center justify-center gap-3 min-h-[50px] text-slate-900">
+    user ? (<section className="w-full min-h-[80vh]  items-center flex-wrap
+        flex-col justify-center">
+      <div className="lg:max-w-4xl max-w-full mx-auto flex items-center
+          justify-center flex-col">
+        <div className="flex my-3 py-2 w-full flex-row flex-wrap items-center
+            justify-center gap-3 min-h-[50px] text-slate-900">
           <div className="self-center">
             <img
               decoding="async"
-              className="mx-2 my-1 object-center object-cover  p-2 w-32 h-32 rounded-full"
+              className="mx-2 my-1 object-center object-cover  p-2 w-32 h-32
+                rounded-full"
               alt="profile"
               src={user.avatar as string}
             />
           </div>
           <div className="flex flex-col items-center justify-center gap-3 ">
-            <div className="flex items-center w-full flex-wrap md:justify-start justify-center  gap-3">
+            <div className="flex items-center w-full flex-wrap md:justify-start
+                justify-center  gap-3">
               <h1 className="font-bold text-lg">{user.username}</h1>
-              <Button
-                margin="1"
-                size="xs"
-                bgColor="bg-deepBlue"
-                textColor="white"
-                title="Edit Profile"
-                onClick={() => setEditProfile(!editProfile)}
-              >
-                Edit Profile
-              </Button>
             </div>
 
-            <div className="flex flex-row items-center justify-center gap-3 flex-wrap">
+            <div className="flex flex-row items-center justify-center gap-3
+                flex-wrap">
               <h1 className="text-black">
                 <b className="text-slate-900"> {user.followers.length}</b>{" "}
                 Followers
@@ -66,12 +58,11 @@ const ProfileScreen = () => {
           <h1 className="text-2xl py-2 text-slate-900 font-bold">
             {user.posts.length !== 0 ? `Your phemes` : "No phemes"}
           </h1>
-          <div className="w-full my-5  flex-wrap gap-5 flex flex-row items-center justify-center">
-            <div className="w-full   flex items-center justify-center  max-w-full flex-row flex-wrap gap-3 ">
-              {user.posts.map((post: IPost) => (
-                <CustomPost post={post} />
-              ))}
-              {editProfile && <EditProfile />}
+          <div className="w-full my-5  flex-wrap gap-5 flex flex-row
+              items-center justify-center">
+            <div className="w-full   flex items-center justify-center
+                max-w-full flex-row flex-wrap gap-3 ">
+              <PostsList id={user.id} />
             </div>
           </div>
         </div>

@@ -5,7 +5,8 @@ import useAuth from "../../hooks/useAuth";
 const UserList = ({ user }: { user: IUser }) => {
   const currentUser = useAuth();
   return (
-    <div className="w-full  flex flex-1 items-center justify-start flex-wrap gap-3">
+    <div className="w-full  flex flex-1 items-center justify-start flex-wrap
+        gap-3">
       <Avatar alt="User avatar" src={user.avatar} radius="full" />
       <Link
         to={user.id === currentUser.id ? `profile` : `user/${user.id}`}

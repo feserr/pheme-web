@@ -41,7 +41,8 @@ const AddComment = ({ id, handleCommentState }: AddCommentProps) => {
   };
 
   return (
-    <div className="w-full   flex text-center my-4  flex-row gap-1 items-center justify-start">
+    <div className="w-full   flex text-center my-4  flex-row gap-1 items-center
+        justify-start">
       <Avatar
         src={currentUser.avatar}
         onClick={() => navigate(`/profile`)}
@@ -54,7 +55,9 @@ const AddComment = ({ id, handleCommentState }: AddCommentProps) => {
       >
         <input
           {...register("content")}
-          className="w-full max-w-[80%] flex-1 md:w-full py-2  bg-light-primary text-gray-900 placeholder-gray-900 border border-gray-300  focus:shadow-outline rounded-lg shadow-box "
+          className="w-full max-w-[80%] flex-1 md:w-full py-2  bg-light-primary
+            text-gray-900 placeholder-gray-900 border border-gray-300
+            focus:shadow-outline rounded-lg shadow-box "
           placeholder="   Write a comment"
         />
       </form>

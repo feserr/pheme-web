@@ -23,20 +23,22 @@ const PostIcons = ({
   const likeMutation = useMutation({
     mutationFn: likePost,
     onSuccess: () => {
-      queryClient.invalidateQueries(["posts"]);
+      queryClient.invalidateQueries(["phemes"]);
     },
   });
 
   const unlikeMutation = useMutation({
     mutationFn: unlikePost,
     onSuccess: () => {
-      queryClient.invalidateQueries(["posts"]);
+      queryClient.invalidateQueries(["phemes"]);
     },
   });
 
   return (
-    <div className="w-full  mx-1 py-4 flex text-center flex-row items-center justify-between">
-      <div className="w-auto flex mx-2 flex-row items-center gap-2 justify-center">
+    <div className="w-full  mx-1 py-4 flex text-center flex-row items-center
+        justify-between">
+      <div className="w-auto flex mx-2 flex-row items-center gap-2
+          justify-center">
         <i className="cursor-pointer">
           {likes?.find((like) => like === currentUser.id) ? (
             <AiFillHeart
@@ -46,7 +48,8 @@ const PostIcons = ({
           ) : (
             <AiOutlineHeart
               onClick={() => likeMutation.mutate(id) as any}
-              className=" text-gray-700 w-7 h-7  transition duration-500 ease-in-out transform  hover:scale-100 "
+              className=" text-gray-700 w-7 h-7  transition duration-500
+                ease-in-out transform  hover:scale-100 "
             />
           )}
         </i>
@@ -54,7 +57,8 @@ const PostIcons = ({
         <i className="cursor-pointer">
           <FiMessageSquare
             onClick={commentIconClick}
-            className="  w-7 text-gray-700 h-7  transition duration-500 ease-in-out transform  hover:scale-100"
+            className="  w-7 text-gray-700 h-7  transition duration-500
+              ease-in-out transform  hover:scale-100"
           />
         </i>
       </div>

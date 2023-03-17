@@ -51,19 +51,24 @@ const UserScreen = () => {
   };
 
   return (
-    user ? (<section className="w-full mt-1 min-h-[80vh] bg-slate-50 items-center flex-wrap flex-col justify-center">
-      <div className="lg:max-w-4xl max-w-full mx-auto flex items-center justify-center flex-col">
-        <div className="flex my-3 py-2   w-full flex-row flex-wrap items-center justify-center gap-3 min-h-[50px] text-slate-900">
+    user ? (<section className="w-full mt-1 min-h-[80vh] bg-slate-50
+        items-center flex-wrap flex-col justify-center">
+      <div className="lg:max-w-4xl max-w-full mx-auto flex items-center
+          justify-center flex-col">
+        <div className="flex my-3 py-2   w-full flex-row flex-wrap items-center
+            justify-center gap-3 min-h-[50px] text-slate-900">
           <div className="self-center">
             <img
               decoding="async"
-              className="mx-2 my-1 p-2 w-32 h-32 rounded-full object-center object-cover"
+              className="mx-2 my-1 p-2 w-32 h-32 rounded-full object-center
+                object-cover"
               src={user.avatar as string}
               alt="user avatar"
             />
           </div>
           <div className="flex flex-col items-center justify-center gap-3 ">
-            <div className="flex items-center w-full flex-wrap md:justify-start justify-center  gap-3">
+            <div className="flex items-center w-full flex-wrap md:justify-start
+                justify-center  gap-3">
               <h1 className="font-bold text-lg">{user.username}</h1>
               {user.id === currentUser.id ? null : user?.followers.find(
                 (follow: number) => follow === currentUser.id
@@ -99,7 +104,8 @@ const UserScreen = () => {
               )}
             </div>
 
-            <div className="flex flex-row items-center justify-center gap-3 flex-wrap">
+            <div className="flex flex-row items-center justify-center gap-3
+                flex-wrap">
               <h1 className="text-black">
                 <b className="text-slate-900"> {user.followers.length}</b>{" "}
                 Followers
@@ -123,8 +129,10 @@ const UserScreen = () => {
           <h1 className="text-2xl py-2 text-slate-900 font-bold">
             {user.posts.length !== 0 ? `${user.username} Phemes` : "No Phemes"}
           </h1>
-          <div className="w-full my-5  flex-wrap gap-5 flex flex-row items-center justify-center">
-            <div className="w-full   flex items-center justify-center  max-w-full flex-row flex-wrap gap-3 ">
+          <div className="w-full my-5  flex-wrap gap-5 flex flex-row
+              items-center justify-center">
+            <div className="w-full flex items-center justify-center
+                max-w-full flex-row flex-wrap gap-3 ">
               <SuspenseWrapper>
                 {user.posts.map((post: IPost) => (
                   <CustomPost post={post} />

@@ -41,16 +41,11 @@ const Button = ({
   return (
     <button
       className={clsx(
-        `${
-          bgColor || "transparent"
-        }  shadow-box inline-flex w-auto  flex-row flex-wrap items-center justify-center  m-${
-          margin || "2"
-        } mx-1  font-inter hover:bg-${hover}    gap-2  rounded-${
-          rounded || "sm"
-        } 
-    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-${bgColor}
-    
-    `,
+        `${bgColor || "transparent"
+        }  shadow-box inline-flex w-auto  flex-row flex-wrap items-center justify-center  m-${margin || "2"
+        } mx-1  font-inter hover:bg-${hover}    gap-2  rounded-${rounded || "sm"
+        }
+    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-${bgColor}`,
         size && sizes[size]
       )}
       {...rest}

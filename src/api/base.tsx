@@ -2,8 +2,8 @@ import { logoutUser } from "../redux/slices/userSlice";
 import { store } from "../redux/store";
 import axios, { AxiosRequestConfig } from "axios";
 
-export const authClient = axios.create({
-  baseURL: import.meta.env.VITE_PHEME_AUTH_URL,
+export const authAPI = axios.create({
+  baseURL: import.meta.env.VITE_PHEME_ENDPOINT_URL,
   headers: {
     "Access-Control-Allow-Origin": "*",
     "Content-Type": "application/json",
@@ -11,24 +11,18 @@ export const authClient = axios.create({
   },
 });
 
-export const userClient = axios.create({
-  baseURL: import.meta.env.VITE_PHEME_USER_URL,
+export const baseAPI = axios.create({
+  baseURL: import.meta.env.VITE_PHEME_ENDPOINT_URL,
   headers: {
-    "Access-Control-Allow-Origin": "*",
-    "Content-Type": "application/json",
-    mode: "cors"
-  },
-});
-
-export const AxiosAPI = axios.create({
-  headers: {
+    'Authorization': "JWT_TOKEN",
     "Access-Control-Allow-Origin": "*",
     "Content-Type": "application/json",
     mode: "cors",
   },
+  withCredentials: true
 });
 
-AxiosAPI.interceptors.request.use(
+baseAPI.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     const token = store.getState().user.currentUser.accessToken;
     config.headers = {
@@ -39,7 +33,7 @@ AxiosAPI.interceptors.request.use(
   (error) => { }
 );
 
-AxiosAPI.interceptors.response.use(
+baseAPI.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error?.response?.status === 401) {
@@ -47,13 +41,3 @@ AxiosAPI.interceptors.response.use(
     }
   }
 );
-
-// const refreshToken = async () => {
-//   try {
-//     const token =  store.getState().user.currentUser.refreshToken;
-
-//     const {data}:any =  await client.post("/auth/refresh", { token: token });
-//     return data
-//   } catch (err) {
-//   }
-// };

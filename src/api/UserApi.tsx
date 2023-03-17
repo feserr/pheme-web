@@ -3,12 +3,13 @@
 import { store } from "../redux/store";
 import { AxiosResponse } from "axios";
 import { AuthProps, IUser } from "../types/UserInterfaces";
-import { AxiosAPI, authClient, userClient } from "./base";
+import { authAPI, baseAPI } from "./base";
 import { IPost } from "../types/PostInterfaces";
+import { generateRandomAvatarOptions } from "../utils/avatars";
 
 export const fetchUsers = async () => {
   try {
-    const res: AxiosResponse = await userClient.get('/api/v1/users');
+    const res: AxiosResponse = await baseAPI.get("/api/v1/users");
     return res;
   } catch (err) {
     return new Promise((resolve, reject) => {
@@ -17,7 +18,7 @@ export const fetchUsers = async () => {
   }
 };
 
-export const fetchFollowers = async ({
+export const fetchFollowings = async ({
   queryKey,
 }: {
   queryKey: Array<string>;
@@ -25,7 +26,7 @@ export const fetchFollowers = async ({
   try {
     const [_, id] = queryKey;
 
-    const res = await AxiosAPI.get(`${import.meta.env.VITE_API_URL}/api/v1/user/follower`,
+    const res = await baseAPI.get(`/api/v1/user/following/${id}`,
       { withCredentials: true });
     return res.data;
   } catch (err) { }
@@ -38,18 +39,19 @@ export const fetchSingleUser = async ({
 }) => {
   const [_, id] = queryKey;
   try {
-    let res: AxiosResponse = await userClient.get(`/api/v1/user/${id}`);
+    let res: AxiosResponse = await baseAPI.get(`/api/v1/user/${id}`);
     const user: IUser = res.data as IUser;
 
-    res = await userClient.get(`/api/v1/user/follower/${id}`);
+    res = await baseAPI.get(`/api/v1/user/follower/${id}`);
+    user.followers = res.data as number[];
+
+    res = await baseAPI.get(`/api/v1/user/following/${id}`);
     user.following = res.data as number[];
 
-    user.followers = [];
-
-    res = await userClient.get(`/api/v1/pheme/user/${user.id}`, { withCredentials: true });
+    res = await baseAPI.get(`/api/v1/pheme/user/${user.id}`);
     user.posts = res.data as Array<IPost>;
     await Promise.all(user.posts.map(async (post) => {
-      res = await userClient.get(`/api/v1/user/${post.createdBy}`);
+      res = await baseAPI.get(`/api/v1/user/${post.createdBy}`);
       const createBy = res.data as IUser;
       post.avatar = createBy.avatar;
       post.username = createBy.username;
@@ -66,12 +68,11 @@ export const fetchSingleUser = async ({
 export const followUser = async ({ queryKey }: { queryKey: Array<string> }) => {
   const [_, id] = queryKey;
   try {
-    const res = await userClient.post(`/api/v1/user/follower/${id}`, { withCredentials: true });
+    const res = await baseAPI.put(`/api/v1/user/follower/${id}`);
     return res.data;
   } catch (err) {
     return new Promise((resolve, reject) => {
       reject(err);
-      alert(err);
     });
   }
 };
@@ -83,44 +84,53 @@ export const unfollowUser = async ({
 }) => {
   const [_, id] = queryKey;
   try {
-    const res = await AxiosAPI.delete(
-      `${import.meta.env.VITE_PHEME_USER_URL}/api/v1/user/follower/${id}`
+    const res = await baseAPI.delete(
+      `/api/v1/user/follower/${id}`
     );
 
     return res.data;
   } catch (err) {
     return new Promise((resolve, reject) => {
       reject(err);
-      alert(err);
     });
   }
 };
 
-export const registerUser = async (data: FormData) => {
-  const response = await fetch(`${import.meta.env.VITE_PHEME_AUTH_URL}/api/v1/auth/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: data.get("username"),
-      email: data.get("email"),
-      password: data.get("password")
-    })
-  });
-
-  return await response.json();
+export const registerUser = async (data: AuthProps) => {
+  try {
+    data.avatar = `https://avataaars.io/?${new URLSearchParams(generateRandomAvatarOptions()).toString()}`;
+    const response = await authAPI.post(
+      "/api/v1/auth/register", data, { withCredentials: true });
+    return response.data;
+  } catch (err) {
+    return new Promise((resolve, reject) => {
+      reject(err);
+    });
+  }
 };
 
 export const loginUser = async (data: AuthProps) => {
-  const response = await fetch(`${import.meta.env.VITE_PHEME_AUTH_URL}/api/v1/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({
-      email: data.email,
-      password: data.password
-    })
-  });
-  return await response.json();
+  try {
+    const response = await authAPI.post(
+      "/api/v1/auth/login", data, { withCredentials: true });
+    return response.data;
+  } catch (err) {
+    return new Promise((_, reject) => {
+      reject(err);
+    });
+  }
+};
+
+export const apiLogoutUser = async () => {
+  try {
+    const response = await authAPI.post(
+      "/api/v1/auth/logout", {}, { withCredentials: true });
+    return response.data;
+  } catch (err) {
+    return new Promise((_, reject) => {
+      reject(err);
+    });
+  }
 };
 
 export const searchUsers = async ({
@@ -131,10 +141,10 @@ export const searchUsers = async ({
   const [_, query] = queryKey;
 
   try {
-    const res: AxiosResponse = await userClient.get(`/api/v1/user/${query}`);
+    const res: AxiosResponse = await baseAPI.get(`/api/v1/user/${query}`);
     return res;
   } catch (err) {
-    return new Promise((resolve, reject) => {
+    return new Promise((_, reject) => {
       reject(err);
       console.log(err);
     });
@@ -144,8 +154,8 @@ export const searchUsers = async ({
 export const editUser = async (data: IUser) => {
   const userID = store.getState().user.currentUser.id;
   try {
-    const res = await AxiosAPI.put(
-      `${import.meta.env.VITE_API_URL}/api/v1/auth/${userID}`,
+    const res = await baseAPI.put(
+      `/api/v1/auth/${userID}`,
       data,
       {
         headers: {

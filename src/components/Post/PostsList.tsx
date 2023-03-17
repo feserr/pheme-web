@@ -1,57 +1,44 @@
-import { fetchPosts } from "../../api/PostApi";
+import { fetchAllPhemes, fetchUserPhemes } from "../../api/PostApi";
 import SuspenseWrapper from "../../shared/SuspenseWrapper";
 import { IPost } from "../../types/PostInterfaces";
 //@ts-ignore
-import { lazy, useState, useTransition } from "react";
+import { lazy, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import SmallSpinner from "../../shared/SmallSpinner";
+import CustomPost from "./CustomPost";
 
-interface PostsListProps {
+interface PhemeListProps {
   data: IPost[];
   refetch: any;
 }
 
+interface UserIdProp {
+  id?: Number;
+}
+
 const Post = lazy(() => import("./Post" /* webpackChunkName: "Post" */));
-const PostsList = () => {
-  const [posts, setPosts] = useState<IPost[]>([]);
-  const [isPending, setTransition] = useTransition();
+const PostsList = ({ id }: UserIdProp) => {
+  const [phemes, setPhemes] = useState<IPost[]>([]);
 
-  // @ts-ignore
-  // const prefetchPosts = async () => {
-  //   await queryClient.prefetchQuery("posts", fetchPosts);
-  // };
-
-  // useEffect(() => {
-  //   const prefetchData = async () => {
-  //     const data: PostsListProps["data"] = await queryClient.fetchQuery(
-  //       ["posts"],
-  //       fetchPosts
-  //     );
-  //     if (data) {
-  //       setPosts(data?.slice(0, 20));
-  //     }
-  //   };
-  //   prefetchData();
-  // }, []);
-
-  useQuery(["posts"], fetchPosts, {
-    onSuccess: (data: PostsListProps["data"]) => {
-      setPosts(data);
+  useQuery(["phemes"], !id ? fetchAllPhemes : () => fetchUserPhemes(id), {
+    onSuccess: (data: PhemeListProps["data"]) => {
+      setPhemes(data);
     },
 
     onSettled: () => {
-      setPosts((posts) => posts)
+      setPhemes((phemes) => phemes)
     }
-
   });
 
   return (
-    <div className="flex items-center justify-center flex-wrap w-full flex-col ">
+    <div className="flex items-center justify-center flex-wrap w-full flex-col">
 
       <SuspenseWrapper>
 
-        {posts.map((post: IPost) => (
-          <Post key={post.id} post={post} />
+        {phemes.map((post: IPost) => (
+          (!id
+            ? <Post key={post.id} post={post} />
+            : <CustomPost key={post.id} post={post} />
+          )
         ))}
       </SuspenseWrapper>
     </div>

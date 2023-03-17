@@ -32,14 +32,16 @@ function Comment({ id }: { id: number }) {
       {comments?.map((comment: IComment) => (
         <div
           key={comment.id}
-          className="w-full py-1 flex items-center justify-start flex-row gap-2 rounded-lg flex-wrap  "
+          className="w-full py-1 flex items-center justify-start flex-row gap-2
+            rounded-lg flex-wrap  "
         >
           <Avatar
             src={comment.avatar}
             onClick={() => navigateToUserPage(comment.user)}
             alt="user avatar"
           />
-          <div className="flex flex-row items-center justify-center gap-1 flex-wrap">
+          <div className="flex flex-row items-center justify-center gap-1
+              flex-wrap">
             <Link
               className="font-bold"
               to={
@@ -57,8 +59,7 @@ function Comment({ id }: { id: number }) {
               {" "}
               <BiTrash
                 onClick={() => deleteCommentMutation.mutate(comment.id)}
-                color="#DC2626
-"
+                color="#DC2626"
                 className="hover:text-red-400"
                 size="1.2em"
               />

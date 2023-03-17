@@ -6,9 +6,6 @@ interface AvatarProps {
   onClick?: () => void;
 }
 const Avatar = ({ src, alt, loading, onClick, radius }: AvatarProps) => {
-
-
-
   return (
     <img
       width="40"

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IUser } from '../../types/UserInterfaces';
+import { apiLogoutUser } from "../../api/UserApi";
 
 interface SliceState {
   definedUser?: object;
@@ -34,6 +35,7 @@ export const userSlice = createSlice({
 
     logoutUser: (state) => {
       localStorage.removeItem('userDetails');
+      apiLogoutUser();
       return { ...resetState }
     },
 
